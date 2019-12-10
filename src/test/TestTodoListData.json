@@ -1,0 +1,31 @@
+{
+    "wireframes": [
+        {
+            "name": "My Cool Site",
+            "owner": "Alex Cuba",
+            "selected": -1,
+            "saved": true,
+            "container": {
+                "height": "5000px",
+                "width": "5000px",
+                "updated": true
+            },
+            "controls": [
+                {
+                    "key": 0,
+                    "type": "label",
+                    "text": "My Cool Website",
+                    "font-size": "20px",
+                    "background": "#333333",
+                    "border-color": "#000000",
+                    "border-width": "5px",
+                    "border-radius": "5px",
+                    "height": "15px",
+                    "width": "20px",
+                    "top": "2500px",
+                    "left": "2500px"
+                }
+            ]
+        }
+    ]
+}
