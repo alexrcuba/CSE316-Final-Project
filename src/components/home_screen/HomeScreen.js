@@ -54,9 +54,6 @@ class HomeScreen extends Component {
                         </div>
 
                             <div style={{ paddingTop: '15px' }} className="home_new_Wireframe_container center-align">
-                                {/* {<button className="home_new_Wireframe_button" onClick={this.handleNewWireframe}>
-                                    Create a New To Do Wireframe
-                                </button>} */}
                                 <a onClick={this.handleNewWireframe} className="waves-effect waves-light btn-large red accent-2 hoverable rounded">
                                     <i className="material-icons right">library_add</i>Create a New Wireframe
                                 </a>

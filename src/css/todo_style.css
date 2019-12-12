@@ -14,7 +14,7 @@
 }
 
 body {
-  background-color: #473850;
+  background-color: #8f8f8f;
   font-family: 'Lexend Exa';
 }
 
@@ -88,4 +88,9 @@ div.banner {
 
 .material-tooltip {
   transform: translateY(-30px) translateX(-165px) !important;
+}
+
+.edit-div{
+  width: 100% !important;
+  background-color: #afafaf
 }

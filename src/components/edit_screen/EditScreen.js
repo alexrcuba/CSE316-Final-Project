@@ -5,6 +5,7 @@ import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { getFirestore } from 'redux-firestore';
 import { Modal, Button } from 'react-materialize';
+import ZoomSaveCancel from './ZoomSaveCancel';
 
 class EditScreen extends Component {
     state = {
@@ -38,10 +39,16 @@ class EditScreen extends Component {
         }
 
         return (
-            <div>
+            <div className="edit-div">
                 <div class="input-field">
-                    <input id="first_name" type="text" class="validate"></input>
-                    <label for="first_name">Name</label>
+                    <input id="name" type="text" class="validate"></input>
+                    <label for="name">Name</label>
+                </div>
+                <div class="row">
+                <div class="col s2">
+                <ZoomSaveCancel ></ZoomSaveCancel>
+                <div class="divider"></div>
+                </div>
                 </div>
             </div>
         );
