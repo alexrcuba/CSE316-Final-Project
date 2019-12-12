@@ -6,6 +6,8 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { getFirestore } from 'redux-firestore';
 import { Modal, Button } from 'react-materialize';
 import ZoomSaveCancel from './ZoomSaveCancel';
+import ComponentElements from './ComponentElements';
+import PropertiesToolbar from './PropertiesToolbar';
 
 class EditScreen extends Component {
     state = {
@@ -45,10 +47,16 @@ class EditScreen extends Component {
                     <label for="name">Name</label>
                 </div>
                 <div class="row">
-                <div class="col s2">
-                <ZoomSaveCancel ></ZoomSaveCancel>
-                <div class="divider"></div>
+                <div class="col s3">
+                    <ZoomSaveCancel ></ZoomSaveCancel>
+                    <div className="col s12" style={{height: 70}}> </div>
+                    <ComponentElements></ComponentElements>
                 </div>
+                <div class="grey lighten-2 container col s6" style={{height: 500}}></div>
+                <div class="col s3">
+                    <PropertiesToolbar></PropertiesToolbar>
+                </div>
+                <div className="col s12" style={{height: 30}}> </div>
                 </div>
             </div>
         );

@@ -20,7 +20,7 @@ body {
 
 div.banner {
   background-image: linear-gradient(to bottom,         
-  #FF5252, #7F5A95);
+  #aeaeae, #111111);
   color: white;
   font-size: 48pt;
   border-color: black;
@@ -72,7 +72,7 @@ div.banner {
 }
 
 .item_card:hover {
-  background-color: #7F5A95;
+  background-color: #666666;
   color: white !important;
   border-radius: 10px; 
   cursor: pointer;

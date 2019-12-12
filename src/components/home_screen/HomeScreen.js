@@ -38,8 +38,7 @@ class HomeScreen extends Component {
 
         return (
             <div className="z-depth-2" style={{
-                backgroundColor: "#55435f", paddingBottom: '70px', borderRadius: '0 0 10px 10px',
-                backgroundImage: 'linear-gradient(to bottom, #7F5A95, #473850)'
+                backgroundColor: "#aeaeae", paddingBottom: '70px', borderRadius: '0 0 10px 10px'
             }}>
                 <div className="dashboard container">
                     <div className="row">
@@ -54,7 +53,7 @@ class HomeScreen extends Component {
                         </div>
 
                             <div style={{ paddingTop: '15px' }} className="home_new_Wireframe_container center-align">
-                                <a onClick={this.handleNewWireframe} className="waves-effect waves-light btn-large red accent-2 hoverable rounded">
+                                <a onClick={this.handleNewWireframe} className="waves-effect waves-light btn-large grey darken-2 hoverable rounded">
                                     <i className="material-icons right">library_add</i>Create a New Wireframe
                                 </a>
                             </div>
