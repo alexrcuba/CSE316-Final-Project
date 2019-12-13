@@ -8,6 +8,7 @@ import { Modal, Button } from 'react-materialize';
 import ZoomSaveCancel from './ZoomSaveCancel';
 import ComponentElements from './ComponentElements';
 import PropertiesToolbar from './PropertiesToolbar';
+import JSONcontainer from './JSONcontainer';
 
 class EditScreen extends Component {
     state = {
@@ -46,13 +47,17 @@ class EditScreen extends Component {
                     <input id="name" type="text" class="validate"></input>
                     <label for="name">Name</label>
                 </div>
-                <div class="row">
+                <div id="edit-modules" class="row">
                 <div class="col s3">
                     <ZoomSaveCancel ></ZoomSaveCancel>
                     <div className="col s12" style={{height: 70}}> </div>
                     <ComponentElements></ComponentElements>
                 </div>
-                <div class="grey lighten-2 container col s6" style={{height: 500}}></div>
+                <div className="col s6">
+                <div className="grey lighten-2 container" style={{height: 500, width: 500, position: "absolute", overflow: "auto"}}>
+                    <JSONcontainer wireframe={this.props.wireframe}></JSONcontainer>
+                </div>
+                </div>
                 <div class="col s3">
                     <PropertiesToolbar></PropertiesToolbar>
                 </div>

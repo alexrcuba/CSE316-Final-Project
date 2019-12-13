@@ -6,8 +6,8 @@
             "selected": -1,
             "saved": true,
             "container": {
-                "height": "5000px",
-                "width": "5000px",
+                "height": 5000,
+                "width": 5000,
                 "updated": true
             },
             "controls": [
@@ -15,15 +15,15 @@
                     "key": 0,
                     "type": "label",
                     "text": "My Cool Website",
-                    "font-size": "20px",
+                    "fontsize": 20,
                     "background": "#333333",
-                    "border-color": "#000000",
-                    "border-width": "5px",
-                    "border-radius": "5px",
-                    "height": "15px",
-                    "width": "20px",
-                    "top": "2500px",
-                    "left": "2500px"
+                    "bordercolor": "#000000",
+                    "borderwidth": 5,
+                    "borderradius": 5,
+                    "height": 15,
+                    "width": 20,
+                    "top": 2500,
+                    "left": 2500
                 }
             ]
         }
