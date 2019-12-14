@@ -2,13 +2,13 @@
     "wireframes": [
         {
             "name": "My Cool Site",
-            "owner": "Alex Cuba",
-            "selected": -1,
-            "saved": true,
+            "owner": "acuba@test.com",
             "container": {
-                "height": 5000,
-                "width": 5000,
-                "updated": true
+                "height": 400,
+                "width": 400,
+                "zoomamount": 0,
+                "selected": -1,
+                "saved": true
             },
             "controls": [
                 {
@@ -16,14 +16,15 @@
                     "type": "label",
                     "text": "My Cool Website",
                     "fontsize": 20,
-                    "background": "#333333",
+                    "fontcolor": "#000000",
+                    "background": "#ffffff",
                     "bordercolor": "#000000",
                     "borderwidth": 5,
                     "borderradius": 5,
-                    "height": 15,
-                    "width": 20,
-                    "top": 2500,
-                    "left": 2500
+                    "height": 100,
+                    "width": 200,
+                    "top": 200,
+                    "left": 200
                 }
             ]
         }

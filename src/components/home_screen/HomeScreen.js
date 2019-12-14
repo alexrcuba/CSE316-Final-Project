@@ -11,12 +11,12 @@ class HomeScreen extends Component {
         let newWireframeData = {
             name: 'Unknown',
             owner: 'Unknown',
-            selected: -1,
-            saved: true,
             container: {
-                height: "5000px",
-                width: "5000px",
-                updated: true
+                height: 5000,
+                width: 5000,
+                selected: -1,
+                saved: true,
+                zoomamount: 0
             },
             controls: [],
             time: Date.now(),

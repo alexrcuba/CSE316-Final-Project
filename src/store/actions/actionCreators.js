@@ -56,3 +56,31 @@ export function deleteWireframe(id) {
         });
     }
 }
+export function updateListName(name, id) {
+    return(dispatch, getState, {getFirebase, getFirestore}) => {
+        const firestore = getFirestore()
+        firestore.collection("wireframes").doc(id).update({
+            name: name
+        }).then(() => {
+            dispatch({type: 'UPDATE_LIST_NAME', name})
+        }).catch((err) => {
+            dispatch({
+                type: 'UPDATE_LIST_NAME_ERROR', err})
+        })
+        }
+}
+export function zoomInOut(wireframe, id) {
+    return(dispatch, getState, {getFirebase, getFirestore}) => {
+        const firestore = getFirestore()
+        firestore.collection("wireframes").doc(id).update({
+            container: wireframe.container,
+            controls: wireframe.controls
+
+        }).then(() => {
+            dispatch({type: 'ZOOMING', wireframe})
+        }).catch((err) => {
+            dispatch({
+                type: 'ZOOMING_ERROR', err})
+        })
+        }
+}
