@@ -7,14 +7,19 @@ import WireframeCard from './WireframeCard';
 class WireframeLinks extends React.Component {
     render() {
         const wireframes = this.props.wireframes;
-        console.log(wireframes);
+        const auth = this.props.auth;
+        //console.log(wireframes);
         return (
             <div className="todo-lists section">
-                {wireframes && wireframes.map(wireframe => (
-                    <Link to={'/edit/' + wireframe.id} key={wireframe.id}>
-                        <WireframeCard wireframe={wireframe} />
-                    </Link>
-                ))}
+                {wireframes && wireframes.map((wireframe) => {
+                    if (wireframe.owner === auth.email) {
+                        return (<Link to={'/edit/' + wireframe.id} key={wireframe.id}>
+                            <WireframeCard wireframe={wireframe} />
+                        </Link>)
+                    } else{
+                        return null;
+                    }
+                })}
             </div>
         );
     }

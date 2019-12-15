@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { getFirestore } from 'redux-firestore';
-import { Modal, Icon } from 'react-materialize';
+import { Button, Modal, Icon } from 'react-materialize';
+import { Link } from 'react-router-dom';
 import { Rnd } from 'react-rnd';
-import { updateListName, zoomInOut } from '../../store/actions/actionCreators.js';
+import { updateWireframe, updateListName, zoomInOut } from '../../store/actions/actionCreators.js';
 
 class EditScreen extends Component {
     state = {
@@ -21,22 +22,87 @@ class EditScreen extends Component {
             borderwidth: null,
             borderradius: null,
         },
-        originalWireframe: null
+        cancelOption: {
+            init: false,
+            saved: true,
+            originalWireframe: null
+        }
     }
 
     handleChange = (wireframe, e) => {
+        console.log(wireframe.container);
         const { target } = e;
-        console.log(wireframe);
+        if(target.id !== "noaved"){
+            let noSaved = this.state.cancelOption;
+            noSaved.saved = false;
+            this.setState({
+                cancelOption: noSaved
+            })
+        }
+        if(this.state.cancelOption.init === false){
+            this.setState({
+                cancelOption: {
+                    init: true,
+                    saved: false,
+                    originalWireframe: wireframe
+                }
+
+            })
+        }
         if (target.id === "name") {
             this.props.updateListName(target.value, wireframe.id);
 
+        } else if (target.id === "save") {
+            let isSaved = this.state.cancelOption;
+            isSaved.saved = true;
+            this.setState({
+                cancelOption: isSaved
+            })
+            if(wireframe.container.zoomamount > 0){
+                console.log(Math.pow(2, wireframe.container.zoomamount));
+                wireframe.container.height /= (Math.pow(2, wireframe.container.zoomamount));
+                wireframe.container.width /= (Math.pow(2, wireframe.container.zoomamount));
+                let controls = wireframe.controls;
+                controls && controls.forEach((controls) => {
+                    controls.fontsize /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.borderwidth /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.borderRadius /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.height /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.width /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.top /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.left /= (Math.pow(2, wireframe.container.zoomamount));
+                });
+                wireframe.controls = controls;
+                wireframe.container.zoomamount = 0;
+                console.log(wireframe.container);
+            } else if(wireframe.container.zoomamount < 0){
+                console.log(Math.pow(2, wireframe.container.zoomamount));
+                wireframe.container.height /= (Math.pow(2, wireframe.container.zoomamount));
+                wireframe.container.width /= (Math.pow(2, wireframe.container.zoomamount));
+                let controls = wireframe.controls;
+                controls && controls.forEach((controls) => {
+                    controls.fontsize /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.borderwidth /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.borderRadius /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.height /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.width /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.top /= (Math.pow(2, wireframe.container.zoomamount));
+                    controls.left /= (Math.pow(2, wireframe.container.zoomamount));
+                });
+                wireframe.controls = controls;
+                wireframe.container.zoomamount = 0;
+                console.log(wireframe.container);
+            }
+            this.props.updateWireframe(wireframe, wireframe.id);
+        } else if (target.id === "nosave"){
+            console.log("NOT SAVED")
+            this.props.updateWireframe(this.state.cancelOption.originalWireframe, wireframe.id);
         } else if (target.firstChild != null) {
             if (target.firstChild.data === "zoom_in") {
                 wireframe.container.zoomamount += 1;
                 wireframe.container.height *= 2;
                 wireframe.container.width *= 2;
                 if (wireframe.container.height > 5000 || wireframe.container.width > 5000) {
-                    console.log("ZOOM IN FAILED");
                     wireframe.container.zoomamount -= 1;
                     wireframe.container.height /= 2;
                     wireframe.container.width /= 2;
@@ -59,7 +125,6 @@ class EditScreen extends Component {
                 wireframe.container.height /= 2;
                 wireframe.container.width /= 2;
                 if (wireframe.container.height < 1 || wireframe.container.width < 1) {
-                    console.log("ZOOM OUT FAILED");
                     wireframe.container.zoomamount += 1;
                     wireframe.container.height *= 2;
                     wireframe.container.width *= 2;
@@ -96,7 +161,7 @@ class EditScreen extends Component {
         if (!auth.uid) {
             return <Redirect to="/" />;
         } else{
-            console.log(auth);
+            //console.log(auth);
         }
 
         if (!wireframe)
@@ -104,6 +169,12 @@ class EditScreen extends Component {
 
         let controls = wireframe.controls;
         let container = wireframe.container;
+        const ConditionalLink = ({ children, to, condition }) => (!!condition && to) ? <Link to={to}>{children}</Link> : <>{children}</>;
+        const ConditionalModal = ({ children, condition }) => (!!condition) ? <Modal  header="Changes Not Saved!" trigger={<div className="clicker black-text col s4" onClick={(e) => this.handleChange(wireframe, e)}>Close</div>}
+        actions={<div><Link to="/"><Button id="save" className="grey darken-1 waves-effect waves-light btn modal-action modal-close" onClick={(e) => this.handleChange(wireframe, e)}>Save Changes</Button></Link>
+        <Link to="/"><Button id="nosave" className="grey darken-1 waves-effect waves-light btn modal-action modal-close" onClick={(e) => this.handleChange(wireframe, e)}>Continue Without Saving</Button></Link></div>}>
+          <h5>You are about to quit without saving your changes. Are you sure you want to do this?</h5>
+          </Modal> : <>{children}</>;
 
         if (!this.changedTime) {
             this.changedTime = true;
@@ -121,8 +192,8 @@ class EditScreen extends Component {
                         <div id="ZoomSaveCancel" class="row">
                             <div id="zoomin" className="clicker black-text col s2" onClick={(e) => this.handleChange(wireframe, e)}><Icon>zoom_in</Icon></div>
                             <div id="zoomout" className="clicker black-text col s2" onClick={(e) => this.handleChange(wireframe, e)}><i class="material-icons">zoom_out</i></div>
-                            <div className="clicker black-text col s4">Save</div>
-                            <div className="clicker black-text col s4">Cancel</div>
+                            <div id="save" onClick={(e) => this.handleChange(wireframe, e)} className="clicker black-text col s4">Save</div>
+                            <ConditionalLink id="close" to="/" condition={!this.state.cancelOption.init || (this.state.cancelOption.init && this.state.cancelOption.saved)}><ConditionalModal id="closeModal" condition={!this.state.cancelOption.saved}><div className="clicker black-text col s4">Close</div></ConditionalModal></ConditionalLink>
                         </div>
                         <div className="col s12" style={{ height: 70 }}> </div>
                         <div id="ComponentElements" className="row">
@@ -142,10 +213,9 @@ class EditScreen extends Component {
                         </div>
                     </div>
                     <div class="grey lighten-2 container col s6" style={{ height: 500, width: 500, overflow: "auto" }}>
-                        <Rnd id="JSONcontainer" className="white container" bounds="parent" size={{ width: container.width, height: container.height, }} position={{ x: 0, y: 0 }} style={{ position: "relative", borderRadius: "5px", borderColor: "black", border: "solid" }}>
+                        <Rnd id="JSONcontainer" className="white container" bounds="parent" size={{ width: container.width, height: container.height, }} position={{ x: 0, y: 0 }} style={{ position: "relative", borderRadius: "5px", borderColor: "black", border: "solid", transform: this.state.zoom }}>
                             {controls && controls.map((controls) => {
                                 if (controls.type === "label") {
-                                    console.log(controls.text);
                                     return (<Rnd id="label" onClick={(e) => this.handleChange(wireframe, e)} bounds="parent" size={{ width: controls.width, height: controls.height, }} position={{ x: controls.left, y: controls.top }} className="btn-large-flat" style={{
                                         textAlign: "center",
                                         background: controls.background,
@@ -154,7 +224,10 @@ class EditScreen extends Component {
                                         borderWidth: controls.borderwidth,
                                         borderRadius: controls.borderradius,
                                         fontSize: controls.fontsize,
+                                        transform: this.state.zoom,
                                     }}>{controls.text}</Rnd>)
+                                } else{
+                                    return null;
                                 }
                             })}
                         </Rnd>
@@ -220,7 +293,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchtoProps = (dispatch) => {
     return {
         updateListName: (wireframe, id) => dispatch(updateListName(wireframe, id)),
-        zoomInOut: (wireframe, id) => dispatch(zoomInOut(wireframe, id))
+        zoomInOut: (wireframe, id) => dispatch(zoomInOut(wireframe, id)),
+        updateWireframe: (wireframe, id) => dispatch(updateWireframe(wireframe, id))
     }
 }
 

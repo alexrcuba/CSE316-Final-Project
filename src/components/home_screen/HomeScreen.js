@@ -7,20 +7,19 @@ import WireframeLinks from './WireframeLinks'
 import { getFirestore } from 'redux-firestore';
 
 class HomeScreen extends Component {
-    handleNewWireframe = () => {
+    handleNewWireframe = (e, auth) => {
         let newWireframeData = {
             name: 'Unknown',
             owner: 'Unknown',
             container: {
                 height: 5000,
                 width: 5000,
-                selected: -1,
-                saved: true,
                 zoomamount: 0
             },
             controls: [],
             time: Date.now(),
         }
+        newWireframeData.owner = auth.email;
         const fireStore = getFirestore();
         let newWireframe = fireStore.collection("wireframes").doc();
         newWireframe.set(newWireframeData);
@@ -53,9 +52,9 @@ class HomeScreen extends Component {
                         </div>
 
                             <div style={{ paddingTop: '15px' }} className="home_new_Wireframe_container center-align">
-                                <a onClick={this.handleNewWireframe} className="waves-effect waves-light btn-large grey darken-2 hoverable rounded">
+                                <div onClick={(e) => this.handleNewWireframe(e, this.props.auth)} className="waves-effect waves-light btn-large grey darken-2 hoverable rounded">
                                     <i className="material-icons right">library_add</i>Create a New Wireframe
-                                </a>
+                                </div>
                             </div>
                         </div>
                     </div>

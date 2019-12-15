@@ -84,3 +84,19 @@ export function zoomInOut(wireframe, id) {
         })
         }
 }
+export function updateWireframe(wireframe, id) {
+    return(dispatch, getState, {getFirebase, getFirestore}) => {
+        const firestore = getFirestore()
+        firestore.collection("wireframes").doc(id).update({
+            name: wireframe.name,
+            container: wireframe.container,
+            controls: wireframe.controls
+
+        }).then(() => {
+            dispatch({type: 'ZOOMING', wireframe})
+        }).catch((err) => {
+            dispatch({
+                type: 'ZOOMING_ERROR', err})
+        })
+        }
+}

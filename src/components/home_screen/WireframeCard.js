@@ -14,13 +14,13 @@ class WireframeCard extends React.Component {
 
     render() {
         const { wireframe } = this.props;
-        console.log("wireframeCard, wireframe.id: " + wireframe.id);
+        //console.log("wireframeCard, wireframe.id: " + wireframe.id);
         return (
             <div className="card z-depth-2 rounded grey lighten-4 todo-list-link hoverable">
                 <div className="card-content grey-text text-darken-4 item_card">
                     <div className="row">
                         <span className="card-title col s8">{wireframe.name}</span>
-                        <a className="delete=project btn-floating btn-large waves-effect waves-light grey col s4" onClick={this.handleChange.bind(this)}><i class="material-icons">delete</i></a>
+                        <div className="delete=project btn-floating btn-large waves-effect waves-light grey col s4" onClick={this.handleChange.bind(this)}><i class="material-icons">delete</i></div>
                     </div>
                 </div>
             </div>
