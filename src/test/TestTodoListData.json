@@ -11,7 +11,6 @@
             "controls": [
                 {
                     "key": 0,
-                    "type": "label",
                     "text": "My Cool Website",
                     "fontsize": 20,
                     "background": "#ffffff",
@@ -37,9 +36,8 @@
             "controls": [
                 {
                     "key": 0,
-                    "type": "container",
                     "text": "",
-                    "fontsize": "",
+                    "fontsize": 0,
                     "background": "#ffff00",
                     "fontcolor": "#2e2e2e",
                     "bordercolor": "#ffffff",
@@ -52,18 +50,70 @@
                 },
                 {
                     "key": 1,
-                    "type": "input",
                     "text": "Name Here Please",
                     "fontsize": 15,
-                    "background": "",
-                    "fontcolor": "",
-                    "bordercolor": "",
-                    "borderwidth": "",
-                    "borderradius": "",
+                    "background": "#aeaeae",
+                    "fontcolor": "eaeaea",
+                    "bordercolor": "000000",
+                    "borderwidth": 5,
+                    "borderradius": 10,
                     "height": 100,
                     "width": 100,
                     "top": 50,
                     "left": 75
+                }
+            ]
+        },
+        {
+            "name": "Default Template",
+            "owner": "admin@test.com",
+            "container": {
+                "height": 500,
+                "width": 300,
+                "zoomamount": 0
+            },
+            "controls": [
+                {
+                    "key": 0,
+                    "text": "",
+                    "fontsize": 0,
+                    "background": "#ffffff",
+                    "fontcolor": "#ffffff",
+                    "bordercolor": "#000000",
+                    "borderwidth": 3,
+                    "borderradius": 2,
+                    "height": 60,
+                    "width": 150,
+                    "top": 50,
+                    "left": 50
+                },
+                {
+                    "key": 1,
+                    "text": "Prompt for Input:",
+                    "fontsize": 15,
+                    "background": "#ffffff",
+                    "fontcolor": "#000000",
+                    "bordercolor": "#ffffff",
+                    "borderwidth": 0,
+                    "borderradius": 0,
+                    "height": 30,
+                    "width": 220,
+                    "top": 250,
+                    "left": 50
+                },
+                {
+                    "key": 2,
+                    "text": "Input",
+                    "fontsize": 15,
+                    "background": "#9e9e9e",
+                    "fontcolor": "#757575",
+                    "bordercolor": "#757575",
+                    "borderwidth": 3,
+                    "borderradius": 2,
+                    "height": 35,
+                    "width": 200,
+                    "top": 450,
+                    "left": 50
                 }
             ]
         }

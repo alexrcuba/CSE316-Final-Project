@@ -12,32 +12,30 @@ import { updateWireframe, updateListName, zoomInOut } from '../../store/actions/
 class EditScreen extends Component {
     state = {
         editedComponent: {
-            key: null,
-            type: null,
-            text: null,
-            fontsize: null,
-            fontcolor: null,
-            background: null,
-            bordercolor: null,
-            borderwidth: null,
-            borderradius: null,
-            height: null,
-            width: null,
-            top: null,
-            left: null
+            key: "",
+            text: "",
+            fontsize: "",
+            fontcolor: "",
+            background: "",
+            bordercolor: "",
+            borderwidth: "",
+            borderradius: "",
+            height: "",
+            width: "",
+            top: "",
+            left: ""
         },
         cancelOption: {
             init: false,
             saved: true,
-            originalWireframe: null
+            originalWireframe: ""
         }
     }
 
     deselectControl = (e) => {
         this.setState({
             editedComponent: {
-                key: null,
-                type: null,
+                key: "",
                 text: "",
                 fontsize: "",
                 fontcolor: "",
@@ -65,7 +63,6 @@ class EditScreen extends Component {
         this.setState({
             editedComponent: {
                 key: item.key,
-                type: item.type,
                 text: item.text,
                 fontsize: item.fontsize,
                 fontcolor: item.fontcolor,
@@ -87,6 +84,54 @@ class EditScreen extends Component {
         } else {
             return "hidden";
         }
+    }
+
+    onResize = (wireframe, key, e, direction, ref, delta, position) => {
+        if (this.state.cancelOption.init === false) {
+            let copy = JSON.parse(JSON.stringify(wireframe));
+            this.setState({
+                cancelOption: {
+                    init: true,
+                    saved: false,
+                    originalWireframe: copy
+                }
+
+            })
+        } else{
+            let noSaved = this.state.cancelOption;
+            noSaved.saved = false;
+            this.setState({
+                cancelOption: noSaved
+            })
+        }
+        wireframe.controls[key].width = ref.offsetWidth;
+        wireframe.controls[key].height = ref.offsetHeight;
+        wireframe.controls[key].top = position.y;
+        wireframe.controls[key].left = position.x;
+        this.props.updateWireframe(wireframe, wireframe.id);
+    }
+
+    onDrag = (wireframe, key, e, d) => {
+        if (this.state.cancelOption.init === false) {
+            let copy = JSON.parse(JSON.stringify(wireframe));
+            this.setState({
+                cancelOption: {
+                    init: true,
+                    saved: false,
+                    originalWireframe: copy
+                }
+
+            })
+        } else{
+            let noSaved = this.state.cancelOption;
+            noSaved.saved = false;
+            this.setState({
+                cancelOption: noSaved
+            })
+        }
+        wireframe.controls[key].top = d.y;
+        wireframe.controls[key].left = d.x;
+        this.props.updateWireframe(wireframe, wireframe.id);
     }
 
     handleChange = (wireframe, e) => {
@@ -111,12 +156,12 @@ class EditScreen extends Component {
         }
         if (target.id === "name") {
             this.props.updateListName(target.value, wireframe.id);
-        } else if (target.id === "height"){
+        } else if (target.id === "height") {
             if (target.value >= 0 && target.value <= 5000) {
                 wireframe.container.height = parseInt(target.value, 10);
                 this.props.updateWireframe(wireframe, wireframe.id);
             }
-        } else if (target.id === "width"){
+        } else if (target.id === "width") {
             if (target.value >= 0 && target.value <= 5000) {
                 wireframe.container.width = parseInt(target.value, 10);
                 this.props.updateWireframe(wireframe, wireframe.id);
@@ -279,6 +324,78 @@ class EditScreen extends Component {
         fireStore.collection('wireframes').doc(this.props.wireframe.id).update({ time: Date.now() })
     }
 
+    createControl = (wireframe, e) => {
+        const { target } = e;
+        if (target.id !== "noaved") {
+            let noSaved = this.state.cancelOption;
+            noSaved.saved = false;
+            this.setState({
+                cancelOption: noSaved
+            })
+        }
+        if (this.state.cancelOption.init === false) {
+            let copy = JSON.parse(JSON.stringify(wireframe));
+            this.setState({
+                cancelOption: {
+                    init: true,
+                    saved: false,
+                    originalWireframe: copy
+                }
+
+            })
+        }
+        let control = null;
+        if (target.id === "container") {
+            control = {
+                key: 0,
+                text: "",
+                fontsize: 0,
+                background: "#ffffff",
+                fontcolor: "#ffffff",
+                bordercolor: "#000000",
+                borderwidth: 3,
+                borderradius: 2,
+                height: 60,
+                width: 150,
+                top: 0,
+                left: 0
+            }
+        } else if (target.id === "label") {
+            control = {
+                key: 0,
+                text: "Prompt for Input:",
+                fontsize: 15,
+                background: "#ffffff",
+                fontcolor: "#000000",
+                bordercolor: "#ffffff",
+                borderwidth: 0,
+                borderradius: 0,
+                height: 30,
+                width: 220,
+                top: 0,
+                left: 0
+            }
+        } else if (target.id === "textfield") {
+            control = {
+                key: 0,
+                text: "Input",
+                fontsize: 15,
+                background: "#9e9e9e",
+                fontcolor: "#757575",
+                bordercolor: "#757575",
+                borderwidth: 3,
+                borderradius: 2,
+                height: 35,
+                width: 200,
+                top: 0,
+                left: 0
+            }
+        }
+        control.key = wireframe.controls.length;
+        wireframe.controls.push(control);
+        this.props.updateWireframe(wireframe, wireframe.id);
+    }
+
     render() {
         const auth = this.props.auth;
         let wireframe = this.props.wireframe;
@@ -307,103 +424,99 @@ class EditScreen extends Component {
         return (
             <div className="edit-div">
                 <div id="input-field" className="row">
-                    <div class="col s1">Name:</div>
-                    <div class="input-field col s3">
-                        <input id="name" type="text" value={wireframe.name} onChange={(e) => this.handleChange(wireframe, e)} class="validate"></input>
+                    <div className="col s1">Name:</div>
+                    <div className="input-field col s3">
+                        <input id="name" type="text" value={wireframe.name} onChange={(e) => this.handleChange(wireframe, e)} className="validate"></input>
                     </div>
-                    <div class="col s2">Dimensions:</div>
-                    <div class="input-field col s3">
-                        <input id="height" type="number" value={wireframe.container.height} onChange={(e) => this.handleChange(wireframe, e)} class="validate"></input>
-                        <label for="height">Height</label>
+                    <div className="col s2">Dimensions:</div>
+                    <div className="input-field col s3">
+                        <input id="height" type="number" value={wireframe.container.height} onChange={(e) => this.handleChange(wireframe, e)} className="validate"></input>
+                        <label htmlFor="height">Height</label>
                     </div>
-                    <div class="input-field col s3">
-                        <input id="width" type="number" value={wireframe.container.width} onChange={(e) => this.handleChange(wireframe, e)} class="validate"></input>
-                        <label for="width">Width</label>
+                    <div className="input-field col s3">
+                        <input id="width" type="number" value={wireframe.container.width} onChange={(e) => this.handleChange(wireframe, e)} className="validate"></input>
+                        <label htmlFor="width">Width</label>
                     </div>
                 </div>
-                <div id="edit-modules" class="row">
-                    <div class="col s3">
-                        <div id="ZoomSaveCancel" class="row">
+                <div id="edit-modules" className="row">
+                    <div className="col s3">
+                        <div id="ZoomSaveCancel" className="row">
                             <div id="zoomin" className="clicker black-text col s2" onClick={(e) => this.handleChange(wireframe, e)}><Icon>zoom_in</Icon></div>
-                            <div id="zoomout" className="clicker black-text col s2" onClick={(e) => this.handleChange(wireframe, e)}><i class="material-icons">zoom_out</i></div>
+                            <div id="zoomout" className="clicker black-text col s2" onClick={(e) => this.handleChange(wireframe, e)}><i className="material-icons">zoom_out</i></div>
                             <div id="save" onClick={(e) => this.handleChange(wireframe, e)} className="clicker black-text col s4">Save</div>
                             <ConditionalLink id="close" to="/" condition={!this.state.cancelOption.init || (this.state.cancelOption.init && this.state.cancelOption.saved)}><ConditionalModal id="closeModal" condition={!this.state.cancelOption.saved}><div className="clicker black-text col s4">Close</div></ConditionalModal></ConditionalLink>
                         </div>
                         <div className="col s12" style={{ height: 70 }}> </div>
                         <div id="ComponentElements" className="row">
                             <div className="col s3" style={{ height: 50 }}> </div>
-                            <div className="white btn-large col s6" style={{ borderStyle: "solid", borderColor: "black" }}></div>
+                            <div id="container" className="white btn-large col s6" style={{ borderStyle: "solid", borderColor: "black" }} onClick={(e) => this.createControl(wireframe, e)}></div>
                             <div className="col s3" style={{ height: 50 }}> </div>
                             <div className="col s12" style={{ textAlign: "center" }}>Container</div>
                             <div className="col s12" style={{ height: 100 }}> </div>
-                            <div className="btn-large-flat col s12" style={{ textAlign: "center" }}>Prompt for Input:</div>
+                            <div id="label" className="btn-large-flat col s12" style={{ textAlign: "center" }} onClick={(e) => this.createControl(wireframe, e)}>Prompt for Input:</div>
                             <div className="col s12" style={{ height: 10 }}> </div>
                             <div className="col s12" style={{ textAlign: "center" }}>Label</div>
                             <div className="col s12" style={{ height: 100 }}> </div>
                             <div className="col s2" style={{ height: 50 }}> </div>
-                            <div className="grey btn col s8" style={{ borderStyle: "solid", borderColor: "grey", textAlign: "left", textTransform: "none", color: "grey" }}>Input</div>
+                            <div id="textfield" className="grey btn col s8" style={{ borderStyle: "solid", borderColor: "grey", textAlign: "center", textTransform: "none", color: "grey" }} onClick={(e) => this.createControl(wireframe, e)}>Input</div>
                             <div className="col s2" style={{ height: 50 }}> </div>
                             <div className="col s12" style={{ textAlign: "center" }}>Textfield</div>
                         </div>
                     </div>
-                    <div class="grey lighten-2 container col s6" onClick={(e) => this.deselectControl(wireframe, e)} style={{ height: 500, width: 500, overflow: "auto" }}>
-                        <div id="JSONcontainer" className="white container" onClick={(e) => this.deselectControl(wireframe, e)} style={{ width: container.width, height: container.height, position: "relative", borderRadius: "3px", borderColor: "black", border: "solid", borderWidth:"2px" }}>
+                    <div className="grey lighten-2 container col s6" onClick={(e) => this.deselectControl(wireframe, e)} style={{ height: 500, width: 500, overflow: "auto" }}>
+                        <div id="JSONcontainer" className="white container" onClick={(e) => this.deselectControl(wireframe, e)} style={{ width: container.width, height: container.height, position: "relative", borderRadius: "3px", borderColor: "black", border: "solid", borderWidth: "2px" }}>
                             {controls && controls.map((controls) => {
-                                if (controls.type === "label") {
-                                    return (<Rnd id={controls.key} onClick={(e) => this.selectControl(wireframe, e)} bounds="parent" size={{ width: controls.width, height: controls.height, }} position={{ x: controls.left, y: controls.top }} className="btn-large-flat" style={{
-                                        textAlign: "center",
-                                        background: controls.background,
-                                        border: "solid",
-                                        color: controls.fontcolor,
-                                        borderWidth: controls.borderwidth,
-                                        borderColor: controls.bordercolor,
-                                        borderRadius: controls.borderradius,
-                                        fontSize: controls.fontsize
-                                    }}>{controls.text}<div id={"visible" + controls.key} style={{ visibility: this.isVisible(controls.key) }}><div className="red container" style={{ top: 0, left: 0, height: 20, width: 20, position: "absolute", zIndex: 1 }}></div>
-                                            <div className="red container" style={{ top: 0, right: 0, height: 20, width: 20, position: "absolute", zIndex: 1 }}></div>
-                                            <div className="red container" style={{ bottom: 0, left: 0, height: 20, width: 20, position: "absolute", zIndex: 1 }}></div>
-                                            <div className="red container" style={{ bottom: 0, right: 0, height: 20, width: 20, position: "absolute", zIndex: 1 }}></div></div></Rnd>)
-                                } else {
-                                    return null;
-                                }
+                                return (<Rnd id={controls.key} onClick={(e) => this.selectControl(wireframe, e)} bounds="parent" size={{ width: controls.width, height: controls.height, }} position={{ x: controls.left, y: controls.top }} className="btn-large-flat" onResizeStop={(...args) => this.onResize(wireframe, controls.key, ...args)} onDragStop={(...args) => this.onDrag(wireframe, controls.key, ...args)} style={{
+                                    textAlign: "center",
+                                    background: controls.background,
+                                    border: "solid",
+                                    color: controls.fontcolor,
+                                    borderWidth: controls.borderwidth,
+                                    borderColor: controls.bordercolor,
+                                    borderRadius: controls.borderradius,
+                                    fontSize: controls.fontsize
+                                }}>{controls.text}<div id={"visible" + controls.key} style={{ visibility: this.isVisible(controls.key) }}><div className="red container" style={{ top: 0, left: 0, height: 20, width: 20, position: "absolute", zIndex: 1 }}></div>
+                                        <div className="red container" style={{ top: 0, right: 0, height: 20, width: 20, position: "absolute", zIndex: 1 }}></div>
+                                        <div className="red container" style={{ bottom: 0, left: 0, height: 20, width: 20, position: "absolute", zIndex: 1 }}></div>
+                                        <div className="red container" style={{ bottom: 0, right: 0, height: 20, width: 20, position: "absolute", zIndex: 1 }}></div></div></Rnd>)
                             })}
                         </div>
                     </div>
-                    <div class="col s3">
+                    <div className="col s3">
                         <div id="PropertiesToolbar" className="row">
                             <div className="col s12">Properties:</div>
-                            <div class="input-field col s12">
-                                <input id="component" type="text" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.text} class="validate"></input>
-                                <label for="component">Component</label>
+                            <div className="input-field col s12">
+                                <input id="component" type="text" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.text} className="validate"></input>
+                                <label htmlFor="component">Component</label>
                             </div>
                             <div className="col s12" style={{ height: 20 }}> </div>
-                            <div class="col s6">Font Size:</div>
-                            <div class="input-field col s6">
-                                <input id="font_size" type="number" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.fontsize} class="validate"></input>
+                            <div className="col s6">Font Size:</div>
+                            <div className="input-field col s6">
+                                <input id="font_size" type="number" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.fontsize} className="validate"></input>
                             </div>
                             <div className="col s12" style={{ height: 20 }}> </div>
-                            <div class="col s6">Font Color:</div>
-                            <div class="input-field col s6">
-                                <input id="font_color" type="color" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.fontcolor} class="validate"></input>
+                            <div className="col s6">Font Color:</div>
+                            <div className="input-field col s6">
+                                <input id="font_color" type="color" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.fontcolor} className="validate"></input>
                             </div>
                             <div className="col s12" style={{ height: 20 }}> </div>
-                            <div class="col s6">Background:</div>
-                            <div class="input-field col s6">
-                                <input id="background" type="color" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.background} class="validate"></input>
+                            <div className="col s6">Background:</div>
+                            <div className="input-field col s6">
+                                <input id="background" type="color" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.background} className="validate"></input>
                             </div>
                             <div className="col s12" style={{ height: 20 }}> </div>
-                            <div class="col s6">Border Color:</div>
-                            <div class="input-field col s6">
-                                <input id="border_c" type="color" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.bordercolor} class="validate"></input>
+                            <div className="col s6">Border Color:</div>
+                            <div className="input-field col s6">
+                                <input id="border_c" type="color" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.bordercolor} className="validate"></input>
                             </div>
                             <div className="col s12" style={{ height: 20 }}> </div>
-                            <div class="col s6">Border Thickness:</div>
-                            <div class="input-field col s6">
-                                <input id="border_t" type="number" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.borderwidth} class="validate"></input>
+                            <div className="col s6">Border Thickness:</div>
+                            <div className="input-field col s6">
+                                <input id="border_t" type="number" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.borderwidth} className="validate"></input>
                             </div>
-                            <div class="col s6">Border Radius:</div>
-                            <div class="input-field col s6">
-                                <input id="border_r" type="number" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.borderradius} class="validate"></input>
+                            <div className="col s6">Border Radius:</div>
+                            <div className="input-field col s6">
+                                <input id="border_r" type="number" onChange={(e) => this.handleChange(wireframe, e)} value={this.state.editedComponent.borderradius} className="validate"></input>
                             </div>
                         </div>
                     </div>
