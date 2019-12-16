@@ -134,6 +134,45 @@ class EditScreen extends Component {
         this.props.updateWireframe(wireframe, wireframe.id);
     }
 
+    readjustKeys(wireframe){
+        let i = 0;
+        for(i; i < wireframe.controls.length; i++){
+          wireframe.controls[i].key = i;
+        }
+      }
+
+    keyPresses = (wireframe, key, e) => {
+        if (this.state.cancelOption.init === false) {
+            let copy = JSON.parse(JSON.stringify(wireframe));
+            this.setState({
+                cancelOption: {
+                    init: true,
+                    saved: false,
+                    originalWireframe: copy
+                }
+
+            })
+        } else{
+            let noSaved = this.state.cancelOption;
+            noSaved.saved = false;
+            this.setState({
+                cancelOption: noSaved
+            })
+        }
+        if(e.key === "Delete"){
+            wireframe.controls.splice(key, 1);
+            this.readjustKeys(wireframe);
+            this.props.updateWireframe(wireframe, wireframe.id);
+        } else if (e.nativeEvent.keyCode === 68) { 
+            if(e.nativeEvent.ctrlKey){
+                let copy = JSON.parse(JSON.stringify(wireframe.controls[key]));
+                copy.key = wireframe.controls.length;
+                wireframe.controls.push(copy);
+                this.props.updateWireframe(wireframe, wireframe.id); 
+            }
+        }
+    }
+
     handleChange = (wireframe, e) => {
         const { target } = e;
         if (target.id !== "noaved") {
@@ -466,7 +505,7 @@ class EditScreen extends Component {
                     <div className="grey lighten-2 container col s6" onClick={(e) => this.deselectControl(wireframe, e)} style={{ height: 500, width: 500, overflow: "auto" }}>
                         <div id="JSONcontainer" className="white container" onClick={(e) => this.deselectControl(wireframe, e)} style={{ width: container.width, height: container.height, position: "relative", borderRadius: "3px", borderColor: "black", border: "solid", borderWidth: "2px" }}>
                             {controls && controls.map((controls) => {
-                                return (<Rnd id={controls.key} onClick={(e) => this.selectControl(wireframe, e)} bounds="parent" size={{ width: controls.width, height: controls.height, }} position={{ x: controls.left, y: controls.top }} className="btn-large-flat" onResizeStop={(...args) => this.onResize(wireframe, controls.key, ...args)} onDragStop={(...args) => this.onDrag(wireframe, controls.key, ...args)} style={{
+                                return (<Rnd id={controls.key} onClick={(e) => this.selectControl(wireframe, e)} bounds="parent" size={{ width: controls.width, height: controls.height, }} position={{ x: controls.left, y: controls.top }} className="btn-large-flat" onResizeStop={(...args) => this.onResize(wireframe, controls.key, ...args)} onDragStop={(...args) => this.onDrag(wireframe, controls.key, ...args)} tabIndex="0" onKeyDown={(e) => this.keyPresses(wireframe, controls.key, e)} style={{
                                     textAlign: "center",
                                     background: controls.background,
                                     border: "solid",
