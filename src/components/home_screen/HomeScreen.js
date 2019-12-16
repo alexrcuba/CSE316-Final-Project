@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 import { firestoreConnect } from 'react-redux-firebase';
 import WireframeLinks from './WireframeLinks'
@@ -12,8 +13,8 @@ class HomeScreen extends Component {
             name: 'Unknown',
             owner: 'Unknown',
             container: {
-                height: 5000,
-                width: 5000,
+                height: 0,
+                width: 0,
                 zoomamount: 0
             },
             controls: [],
@@ -28,6 +29,21 @@ class HomeScreen extends Component {
             pathname: "/edit/" + newWireframe.id,
             key: newWireframe.id,
         });
+    }
+
+    isAdmin(users, auth){
+        if(users === null){
+            return ""
+        }
+        const entries = Object.entries(users);
+        for(const entry of entries){
+            if(entry[1].email === auth.email){
+                if(entry[1].admin === true){
+                    return ""
+                }
+            }
+        }
+        return "hidden";
     }
 
     render() {
@@ -56,6 +72,15 @@ class HomeScreen extends Component {
                                     <i className="material-icons right">library_add</i>Create a New Wireframe
                                 </div>
                             </div>
+
+                            <div style={{ paddingTop: '15px', visibility: this.isAdmin(this.props.users, this.props.auth) }} className="home_new_Wireframe_container center-align">
+                                <Link to="/databaseTester">
+                                <div className="waves-effect waves-light btn-large grey darken-2 hoverable rounded">
+                                    Database Tester
+                                </div>
+                                </Link>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -65,8 +90,10 @@ class HomeScreen extends Component {
 }
 
 const mapStateToProps = (state) => {
+    const {users} = state.firestore.data;
     return {
-        auth: state.firebase.auth
+        auth: state.firebase.auth,
+        users: users ? users : null
     };
 };
 
@@ -74,5 +101,6 @@ export default compose(
     connect(mapStateToProps),
     firestoreConnect([
         { collection: 'wireframes', orderBy: ["time", "desc"] },
+        { collection: 'users'}
     ]),
 )(HomeScreen);

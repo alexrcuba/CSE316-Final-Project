@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { firebaseConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { Redirect } from 'react-router-dom';
-import { registerHandler } from '../../store/database/asynchHandler'
+import { registerHandler } from '../../store/database/asynchHandler';
+import { Checkbox } from 'react-materialize';
 
 class RegisterScreen extends Component {
   state = {
@@ -11,15 +12,22 @@ class RegisterScreen extends Component {
     password: '',
     firstName: '',
     lastName: '',
+    admin: false,
   }
 
   handleChange = (e) => {
     const { target } = e;
-
-    this.setState(state => ({
-      ...state,
-      [target.id]: target.value,
-    }));
+    if (target.id === "admin") {
+      this.setState(state => ({
+        ...state,
+        [target.id]: !this.state.admin,
+      }));
+    } else {
+      this.setState(state => ({
+        ...state,
+        [target.id]: target.value,
+      }));
+    }
   }
 
   handleSubmit = (e) => {
@@ -59,7 +67,11 @@ class RegisterScreen extends Component {
             <input type="text" name="lastName" id="lastName" onChange={this.handleChange} />
           </div>
           <div className="input-field">
-            <button type="submit" className="btn pink lighten-1 z-depth-0">Sign Up</button>
+            <div style={{ height: 30 }}></div>
+            <Checkbox filledIn label="Admin" name="admin" id="admin" onChange={this.handleChange} />
+          </div>
+          <div className="input-field">
+            <button type="submit" className="btn grey darken-1 z-depth-0">Sign Up</button>
             {authError ? <div className="red-text center"><p>{authError}</p></div> : null}
           </div>
         </form>

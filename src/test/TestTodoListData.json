@@ -14,8 +14,8 @@
                     "type": "label",
                     "text": "My Cool Website",
                     "fontsize": 20,
-                    "fontcolor": "#000000",
                     "background": "#ffffff",
+                    "fontcolor": "#000000",
                     "bordercolor": "#000000",
                     "borderwidth": 5,
                     "borderradius": 5,
@@ -23,6 +23,47 @@
                     "width": 200,
                     "top": 200,
                     "left": 200
+                }
+            ]
+        },
+        {
+            "name": "Give Your Info",
+            "owner": "admin@test.com",
+            "container": {
+                "height": 300,
+                "width": 600,
+                "zoomamount": 0
+            },
+            "controls": [
+                {
+                    "key": 0,
+                    "type": "container",
+                    "text": "",
+                    "fontsize": "",
+                    "background": "#ffff00",
+                    "fontcolor": "#2e2e2e",
+                    "bordercolor": "#ffffff",
+                    "borderwidth": 0,
+                    "borderradius": 0,
+                    "height": 100,
+                    "width": 200,
+                    "top": 100,
+                    "left": 100
+                },
+                {
+                    "key": 1,
+                    "type": "input",
+                    "text": "Name Here Please",
+                    "fontsize": 15,
+                    "background": "",
+                    "fontcolor": "",
+                    "bordercolor": "",
+                    "borderwidth": "",
+                    "borderradius": "",
+                    "height": 100,
+                    "width": 100,
+                    "top": 50,
+                    "left": 75
                 }
             ]
         }

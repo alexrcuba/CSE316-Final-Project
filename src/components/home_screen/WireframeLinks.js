@@ -8,7 +8,6 @@ class WireframeLinks extends React.Component {
     render() {
         const wireframes = this.props.wireframes;
         const auth = this.props.auth;
-        //console.log(wireframes);
         return (
             <div className="todo-lists section">
                 {wireframes && wireframes.map((wireframe) => {

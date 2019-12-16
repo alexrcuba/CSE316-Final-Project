@@ -14,7 +14,6 @@ class WireframeCard extends React.Component {
 
     render() {
         const { wireframe } = this.props;
-        //console.log("wireframeCard, wireframe.id: " + wireframe.id);
         return (
             <div className="card z-depth-2 rounded grey lighten-4 todo-list-link hoverable">
                 <div className="card-content grey-text text-darken-4 item_card">
